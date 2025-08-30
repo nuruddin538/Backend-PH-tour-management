@@ -31,3 +31,11 @@ const connectRedis = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.connectRedis = connectRedis;
+// Graceful shutdown
+process.on("SIGINT", () => __awaiter(void 0, void 0, void 0, function* () {
+    if (exports.redisClient.isOpen) {
+        yield exports.redisClient.quit();
+        console.log("Redis disconnected on app termination");
+    }
+    process.exit(0);
+}));
