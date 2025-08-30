@@ -19,14 +19,14 @@ const createDivision = (payload) => __awaiter(void 0, void 0, void 0, function* 
     if (existingDivision) {
         throw new Error("A division with this name already exists.");
     }
-    // const baseSlug = payload.name.toLowerCase().split(" ").join("-");
-    // let slug = `${baseSlug}-division`;
-    // console.log(slug);
-    // let counter = 0;
-    // while (await Division.exists({ slug })) {
-    //   slug = `${slug}-${counter++}`;
-    // }
-    // payload.slug = slug;
+    const baseSlug = payload.name.toLowerCase().split(" ").join("-");
+    let slug = `${baseSlug}-division`;
+    console.log(slug);
+    let counter = 0;
+    while (yield division_model_1.Division.exists({ slug })) {
+        slug = `${slug}-${counter++}`;
+    }
+    payload.slug = slug;
     const division = yield division_model_1.Division.create(payload);
     return division;
 });
@@ -65,15 +65,15 @@ const updateDivision = (id, payload) => __awaiter(void 0, void 0, void 0, functi
     if (duplicateDivision) {
         throw new Error("A division with this name already exists.");
     }
-    // if (payload.name) {
-    //   const baseSlug = payload.name.toLowerCase().split(" ").join("-");
-    //   let slug = `${baseSlug}-division`;
-    //   let counter = 0;
-    //   while (await Division.exists({ slug })) {
-    //     slug = `${slug}-${counter++}`;
-    //   }
-    //   payload.slug = slug;
-    // }
+    if (payload.name) {
+        const baseSlug = payload.name.toLowerCase().split(" ").join("-");
+        let slug = `${baseSlug}-division`;
+        let counter = 0;
+        while (yield division_model_1.Division.exists({ slug })) {
+            slug = `${slug}-${counter++}`;
+        }
+        payload.slug = slug;
+    }
     const updatedDivision = yield division_model_1.Division.findByIdAndUpdate(id, payload, {
         new: true,
         runValidators: true,

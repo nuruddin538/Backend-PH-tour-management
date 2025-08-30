@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OTPService = void 0;
-const redis_config_1 = require("../../config/redis.config");
+const redis_1 = require("../../config/redis");
 const sendEmail_1 = require("../../utils/sendEmail");
 const crypto_1 = __importDefault(require("crypto"));
 const user_model_1 = require("../user/user.model");
@@ -34,12 +34,14 @@ const sendOTP = (email, name) => __awaiter(void 0, void 0, void 0, function* () 
     }
     const otp = generateOtp();
     const redisKey = `otp:${email}`;
-    yield redis_config_1.redisClient.set(redisKey, otp, {
-        expiration: {
-            type: "EX",
-            value: OTP_EXPIRATION,
-        },
-    });
+    yield redis_1.redisClient.set(redisKey, otp, { EX: OTP_EXPIRATION }
+    //   {
+    //   expiration: {
+    //     type: "EX",
+    //     value: OTP_EXPIRATION,
+    //   },
+    // }
+    );
     yield (0, sendEmail_1.sendEmail)({
         to: email,
         subject: "Your OTP Code",
@@ -59,16 +61,16 @@ const verifyOTP = (email, otp) => __awaiter(void 0, void 0, void 0, function* ()
         throw new AppError_1.default(401, "Your are already verified");
     }
     const redisKey = `otp:${email}`;
-    const savedOtp = yield redis_config_1.redisClient.get(redisKey);
-    if (!savedOtp) {
+    const savedOtp = yield redis_1.redisClient.get(redisKey);
+    if (!savedOtp || savedOtp !== otp) {
         throw new AppError_1.default(401, "Invalid OTP");
     }
-    if (savedOtp !== otp) {
-        throw new AppError_1.default(401, "Invalid OTP");
-    }
+    // if (savedOtp !== otp) {
+    //   throw new AppError(401, "Invalid OTP");
+    // }
     yield Promise.all([
         user_model_1.User.updateOne({ email }, { isVerified: true }, { runValidators: true }),
-        redis_config_1.redisClient.del([redisKey]),
+        redis_1.redisClient.del(redisKey),
     ]);
 });
 exports.OTPService = {

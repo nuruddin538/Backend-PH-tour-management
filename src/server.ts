@@ -4,7 +4,8 @@ import mongoose from "mongoose";
 import app from "./app";
 import { envVars } from "./app/config/env";
 import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
-import { connectRedis } from "./app/config/redis.config";
+import { connectRedis } from "./app/config/redis";
+// import ServerlessHttp from "serverless-http";
 
 let server: Server;
 
@@ -81,3 +82,6 @@ process.on("uncaughtException", (err) => {
  * uncaught rejection error
  * signal termination sigterm
  */
+
+// const handler = ServerlessHttp(app);
+// export default handler;

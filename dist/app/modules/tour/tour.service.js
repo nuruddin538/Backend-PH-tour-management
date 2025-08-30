@@ -19,14 +19,14 @@ const createTour = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     if (existingTour) {
         throw new Error("A tour with this title already exists");
     }
-    // const baseSlug = payload.title.toLowerCase().split(" ").join("-");
-    // let slug = `${baseSlug}`;
-    // console.log(slug);
-    // let counter = 0;
-    // while (await Tour.exists({ slug })) {
-    //   slug = `${slug}-${counter++}`;
-    // }
-    // payload.slug = slug;
+    const baseSlug = payload.title.toLowerCase().split(" ").join("-");
+    let slug = `${baseSlug}`;
+    console.log(slug);
+    let counter = 0;
+    while (yield tour_model_1.Tour.exists({ slug })) {
+        slug = `${slug}-${counter++}`;
+    }
+    payload.slug = slug;
     const tour = yield tour_model_1.Tour.create(payload);
     return tour;
 });
@@ -58,15 +58,15 @@ const updateTour = (id, payload) => __awaiter(void 0, void 0, void 0, function* 
     if (!existingTour) {
         throw new Error("Tour not found.");
     }
-    // if (payload.title) {
-    //   const baseSlug = payload.title.toLowerCase().split(" ").join("-");
-    //   let slug = `${baseSlug}`;
-    //   let counter = 0;
-    //   while (await Tour.exists({ slug })) {
-    //     slug = `${slug}-${counter++}`; // dhaka-division-2
-    //   }
-    //   payload.slug = slug;
-    // }
+    if (payload.title) {
+        const baseSlug = payload.title.toLowerCase().split(" ").join("-");
+        let slug = `${baseSlug}`;
+        let counter = 0;
+        while (yield tour_model_1.Tour.exists({ slug })) {
+            slug = `${slug}-${counter++}`; // dhaka-division-2
+        }
+        payload.slug = slug;
+    }
     if (payload.images &&
         payload.images.length > 0 &&
         existingTour.images &&

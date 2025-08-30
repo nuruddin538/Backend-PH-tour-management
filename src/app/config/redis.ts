@@ -1,5 +1,6 @@
 import { createClient } from "redis";
 import { envVars } from "./env";
+import { RedisStore } from "connect-redis";
 
 export const redisClient = createClient({
   username: envVars.REDIS_USERNAME,
@@ -22,3 +23,19 @@ export const connectRedis = async () => {
     console.log("Redis Connected");
   }
 };
+
+// Graceful shutdown
+process.on("SIGINT", async () => {
+  if (redisClient.isOpen) {
+    await redisClient.quit();
+    console.log("Redis disconnected on app termination");
+  }
+  process.exit(0);
+});
+
+export const redisStore = new RedisStore({
+  client: redisClient,
+  ttl: 7 * 24 * 60 * 60,
+});
+
+// export const abc = new RedisStore;

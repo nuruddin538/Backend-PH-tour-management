@@ -16,7 +16,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = __importDefault(require("./app"));
 const env_1 = require("./app/config/env");
 const seedSuperAdmin_1 = require("./app/utils/seedSuperAdmin");
-const redis_config_1 = require("./app/config/redis.config");
+const redis_1 = require("./app/config/redis");
+// import ServerlessHttp from "serverless-http";
 let server;
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -31,7 +32,7 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, redis_config_1.connectRedis)();
+    yield (0, redis_1.connectRedis)();
     yield startServer();
     yield (0, seedSuperAdmin_1.seedSuperAdmin)();
 }))();
@@ -80,3 +81,5 @@ process.on("uncaughtException", (err) => {
  * uncaught rejection error
  * signal termination sigterm
  */
+// const handler = ServerlessHttp(app);
+// export default handler;
